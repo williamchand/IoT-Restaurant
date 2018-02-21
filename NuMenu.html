@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<style>
+.button {
+   background-color: #990033;
+   border: none;
+   color: white;
+   padding: 2px 10px;
+   text-align: center;
+   cursor: pointer;
+   border-radius:25px;
+}
+.bigbutton1 {
+   position: absolute;
+   width: 210px;
+   height: 100px;
+   background-color: #33FF33;
+   font-weight: normal;
+   color: blue;
+   text-align: center;
+   size: 30px
+   cursor:pointer;
+   font-size: 45px;
+   margin-top: 0px;
+   border-radius:25px;
+}
+.bigbutton2 {
+   position: absolute;
+   width: 210px;
+   height: 100px;
+   background-color: #33FF33;
+   font-weight: normal;
+   color: blue;
+   text-align: center;
+   size: 30px
+   cursor:pointer;
+   font-size: 45px;
+   margin-top: 100px;
+   border-radius:25px;
+}
+.textbox{
+   background-color: #AAAAFF;
+   border: 6px solid #0000FF;
+   color: red;
+   padding: 2px 10px;
+   text-align: center;
+   cursor: pointer;
+   border-radius:15px;
+}
+#centerDoc {
+   position: absolute;
+   padding: 0 0 0 10px; /*top right bottom left*/
+   margin-top: 50px;
+   width: 650px;
+   height: 600px;
+   margin-left: 235px;
+   background-color: #ffdddd;
+   border-left: 6px solid #f44336;
+   color: #FF11BB;
+   border-radius:25px;
+}
+#ItemDoc {
+   position: absolute;
+}
+#navigation {
+   border-radius:10px;
+   background: yellow;
+   position: absolute;
+   width: 210px;
+   height: 600px;
+   margin: 0;
+   margin-top: 0px;
+   border-right: 1px solid #FFCC11;
+   font-weight: normal;
+   font-size: 18px;
+   border-left: 6px solid #FFCC11;
+   color: #FF1111;
+}
+#NumberDoc {
+   position: absolute;
+   padding: 0 0 10 0; /*top right bottom left*/
+   margin-top: 0;
+   margin-left: 400px;
+   width: 400px;
+}
+#PriceDoc {
+   position: absolute;
+   padding: 0 0 10 0; /*top right bottom left*/
+   margin-top: 0;
+   margin-left: 200px;
+   width: 400px;
+}
+#RightDoc {
+   position: absolute;
+   padding: 0 0 10px 0; /*top right bottom left*/
+   margin-top: 0px;
+   margin-left: 600px;
+}
+#titles {
+font-size: 40px;
+}
+</style>
+<script>
+var food = ['Nasi Putih','Nasi Goreng', 'Cumi Goreng', 'Ikan Goreng', 'Ayam Goreng','Steak Ayam','Kepiting Bakar'];
+var pricefood = [4000,12000, 10000, 10000, 11000,18000,50000];
+var foodnumber = [];
+var drink = ['Orange Juice','Papaya Juice','Air Putih','Teh Kotak','Espresso'];
+var pricedrink = [8000,9000,3000,4000,30000];
+var drinknumber = [];
+var itemlist;
+var i = 0;
+var price = 0;
+var cashback = 0;
+while (i <food.length) {
+foodnumber[i] = 0;
+i++;
+}
+i = 0;
+while (i <drink.length) {
+drinknumber[i] = 0;
+i++;
+}
+function processbeli() {
+var phraseElement = document.getElementById('phrase');
+var response = '<div id=RightDoc><input type=button class=button value=PAY onclick=processcekmoney() Button\></div><div id=titles>PEMBAYARAN</div>';
+i = 0;
+price=0;
+while (food[i]) {
+if (foodnumber[i]>0){
+price +=foodnumber[i]*pricefood[i];
+}
+i++;
+}
+i=0;
+while (drink[i]){
+if (drinknumber[i]>0){
+price +=drinknumber[i]*pricedrink[i];
+}
+i++;
+}
+response += 'Harga yang perlu dibayarkan = '+price +'<br><input type=number value=0 id=bayar class=textbox /><br><br><div id=titles>List Makanan</div>';
+i=0;
+while (food[i]){
+if (foodnumber[i]>0){
+response += '<p><div id=ItemDoc>'+food[i]+'</div><div id=PriceDoc>'+foodnumber[i]+' Porsi</div></p><br>'  ;
+}
+i++;
+}
+i=0;
+while (drink[i]){
+if (drinknumber[i]>0){
+response += '<p><div id=ItemDoc>'+drink[i]+'</div><div id=PriceDoc>'+drinknumber[i]+' Gelas</div></p><br>'  ;
+}
+i++;
+}
+phraseElement.innerHTML = response;
+}
+function processcekmoney() {
+var money = document.getElementById('bayar').value;
+cashback = money - price;
+if (price>0){
+if (cashback >= 0) {
+processakhir();
+}
+else {
+alert('Uang Anda Tidak Cukup');
+}
+}
+else{
+alert('Anda Belum Memesan');
+}
+}
+function processakhir() {
+var phraseElement = document.getElementById('phrase');
+var response = 'Silahkan Tunggu makanannya ^_^ <br>kembaliannya<br>RP. '+cashback;
+var itemlist = "";
+nocache = '&nocache=' + Math.random()*1000000;
+var request = new XMLHttpRequest();
+phraseElement.innerHTML = response;
+i = 0;
+while (food[i]){
+if (foodnumber[i]>0){
+itemlist += '&BARANG='+food[i]+' '+foodnumber[i]+' buah/n'  ;
+}
+i++;
+}
+i=0;
+while (drink[i]){
+if (drinknumber[i]>0){
+itemlist += '&BARANG='+drink[i]+' '+drinknumber[i]+' gelas/n'  ;
+}
+i++;
+}
+itemlist += '&CASH=RP.'+cashback;
+request.open('GET','ajax_inputs'+itemlist+nocache,true);
+request.send(null);
+}
+function addf(j){
+	foodnumber[j]++;
+	foodlist();
+}
+function minf(j){
+if (foodnumber[j]>0){
+	foodnumber[j]--;
+	}
+	foodlist();
+}
+function addd(j){
+	drinknumber[j]++;
+	drinklist();
+}
+function mind(j){
+if (drinknumber[j]>0){
+	drinknumber[j]--;
+	}
+	drinklist();
+}
+function foodlist(){
+var phraseElement = document.getElementById('phrase');
+var response = '<div id=RightDoc><input type=button class=button value=Buy onclick=processbeli() Button\></div><div id=titles>FOOD</div>';
+i = 0;
+while (food[i]) {
+    response += '<p><div id=ItemDoc>'+food[i]+'</div><div id=PriceDoc>'+ pricefood[i];
+	response += '</div><div id=NumberDoc><input type=button class=button value=+ onclick=addf('+i+') Button\> ';
+	response += foodnumber[i]+' <input type=button class=button value=- onclick=minf('+i+') Button\></div></p><br>';
+    i++;
+}
+phraseElement.innerHTML = response;
+}
+function drinklist(){
+var phraseElement = document.getElementById('phrase');
+var response = '<div id=RightDoc><input type=button class=button value=Buy onclick=processbeli() Button\></div><div id=titles>DRINK</div>';
+i = 0;
+while (drink[i]) {
+    response += '<p><div id=ItemDoc>'+drink[i]+'</div><div id=PriceDoc>'+ pricedrink[i];
+	response += '</div><div id=NumberDoc><input type=button class=button value=+ onclick=addd('+i+') Button\> ';
+	response += drinknumber[i]+' <input type=button class=button value=- onclick=mind('+i+') Button\></div></p><br>';
+    i++;
+}
+phraseElement.innerHTML = response;
+}
+window.onload = foodlist;
+</script>
+<head> </head>
+<body bgcolor=#AA33AA onload="GetArduinoIO()">
+<div id=navigation>
+NUMENU RESTAURANT<br>
+<input type=button class=bigbutton1 value=Food onclick=foodlist() Button\>
+<input type=button class=bigbutton2 value=Drink onclick=drinklist() Button\>
+</div>
+<div id=centerDoc>
+<p id=phrase></p>
+</div>
+</body>
+</html>
